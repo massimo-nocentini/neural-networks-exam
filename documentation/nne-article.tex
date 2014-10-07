@@ -31,7 +31,29 @@
     \newpage
 
     \section{Problem description and dataset analysis}
+
+    \begin{table}
+%      \begin{adjustwidth}{-1cm}{}
+        \begin{tabular}{ c | c }
+            Comprehensive distribution over $4177$ samples  &   Secret distribution over $1253$ samples \\
+            \hline 
+            \input{comprehensive-targets-histogram.tex} & \input{secret-targets-histogram.tex} \\
+            \hline
+        \end{tabular}
+%      \end{adjustwidth}
+      \caption{Summary table for \emph{computer scientist} user profile}
+      \label{fig:computer-scientist-user-profile}
+    \end{table}
+
     \lipsum[1]
+
+    \begin{table}
+      \begin{adjustwidth}{-4cm}{}
+        \input{summary-comprehensive.tex}    
+      \end{adjustwidth}
+      \caption{Summary table for \emph{computer scientist} user profile}
+      \label{fig:computer-scientist-user-profile}
+    \end{table}
 
     \section{Training neural nets}
     \lipsum[1]
