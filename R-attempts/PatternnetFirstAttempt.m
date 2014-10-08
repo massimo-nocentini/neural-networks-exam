@@ -7,8 +7,8 @@
 %   inputs - input data.
 %   targets - target data.
 
-inputs = inputs';
-targets = targets';
+inputs = originalinputs';
+targets = originaltargets';
 
 % Create a Pattern Recognition Network
 hiddenLayerSize = 10;
@@ -30,7 +30,7 @@ net.divideParam.testRatio = 15/100;
 
 % For help on training function 'trainscg' type: help trainscg
 % For a list of all training functions type: help nntrain
-net.trainFcn = 'trainscg';  % Scaled conjugate gradient
+net.trainFcn = 'traingd';  % Scaled conjugate gradient
 
 % Choose a Performance Function
 % For a list of all performance functions type: help nnperformance
@@ -47,6 +47,7 @@ net.plotFcns = {'plotperform','plottrainstate','ploterrhist', ...
 
 % Test the Network
 outputs = net(inputs);
+secretoutputs = net (secretinputs')
 errors = gsubtract(targets,outputs);
 performance = perform(net,targets,outputs)
 
