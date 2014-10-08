@@ -7,6 +7,7 @@
 %   inputs - input data.
 %   targets - target data.
 
+% the following inputs are blind respect the secret ones.
 inputs = originalinputs';
 targets = originaltargets';
 
@@ -47,7 +48,8 @@ net.plotFcns = {'plotperform','plottrainstate','ploterrhist', ...
 
 % Test the Network
 outputs = net(inputs);
-secretoutputs = net (secretinputs')
+secretoutputs = net (secretinputs');
+
 errors = gsubtract(targets,outputs);
 performance = perform(net,targets,outputs)
 
