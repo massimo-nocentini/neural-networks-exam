@@ -31,7 +31,7 @@ net.divideParam.testRatio = 15/100;
 
 % For help on training function 'trainscg' type: help trainscg
 % For a list of all training functions type: help nntrain
-net.trainFcn = 'trainrp';  % Scaled conjugate gradient
+net.trainFcn = 'trainlm';  % Scaled conjugate gradient
 
 % Choose a Performance Function
 % For a list of all performance functions type: help nnperformance
