@@ -6,46 +6,120 @@
 % \usepackage[showframe=true]{geometry}  
 \usepackage{changepage}
 \usepackage{graphicx}
+\usepackage{amsmath}
+
 
 \begin{document}
 \title{\rmfamily\normalfont\spacedallcaps{Homework for Neural Network Exam}} 
-    \author{\spacedlowsmallcaps{Massimo Nocentini}\\\spacedlowsmallcaps{ 5422207, Group 1}} \date{\today}
+    \author{\spacedlowsmallcaps{Massimo Nocentini}} \date{\today}
     
     \maketitle
 
     %% \noindent\lipsum[1] Just a test.\footnote{This is a footnote.}      
     \begin{abstract}
       This article collects the work I did in order to support my
-      Quantitative Systems Analysis exam. The goal is to study
-      resources usage respect a collection of user profiles, each one
-      of them producing different network traffic and CPU/memory
-      consumption patterns in different time windows. I performed some
-      experiments repeating them over time, analyzing results with a
-      piece of Smalltalk software, initially implemented for the
-      problem at hand, but it turns out to be far more general.
-    \end{abstract}
+      Neural Network course final exam. The goal is to study neural networks
+      using different training functions in order to test them against a dataset
+      which holds datas about abalone. This short document describes our experience:
+      we outline the problem and its application environment, the dataset used in
+      experiments and a comparison of classification's results by different training functions.
+      \end{abstract}
        
-    \tableofcontents
-   
- 
-    \newpage
+     
 
-    \section{Problem description and dataset analysis}
+    \section{Problem description}
+    
+    We choose a classification problem in order to gain insights about neural networks.
+    In particular, the dataset under study contains informations about abalone and
+    the contained data comes from real measurements. The original article related to this
+    dataset can be found in \cite{Nash-Sellers-Talbot-Cawthorn-Ford} and the dataset itself
+    can be downloaded from \cite{ml-berkeley-dataset-url}. We report the original 
+    problem description given in the article:
+    \begin{quote}
+    Predicting the age of abalone from physical measurements.  The age of
+    abalone is determined by cutting the shell through the cone, staining it,
+    and counting the number of rings through a microscope -- a boring and
+    time-consuming task.  Other measurements, which are easier to obtain, are
+    used to predict the age.  Further information, such as weather patterns
+    and location (hence food availability) may be required to solve the problem.
+
+    From the original data examples with missing values were removed (the
+     majority having the predicted value missing), and the ranges of the
+    continuous values have been scaled for use with an ANN (by dividing by 200).
+    \end{quote}
+
+    So, our goal is to classify abalone's age, in order to achieve this goal
+    we tackle the dataset structure in the next section.
+
+    \section{Dataset structure}
+
+    The choosen dataset holds $4177$ samples and $8$ features variables and it 
+    is structured according the following description:
+
+    \begin{verbatim}
+    Name            Data Type   Meas.   Description
+    ----            ---------   -----   -----------
+    Sex             nominal             M, F, and I (infant)
+    Length          continuous  mm      Longest shell measurement
+    Diameter        continuous  mm      perpendicular to length
+    Height          continuous  mm      with meat in shell
+    Whole weight    continuous  grams   whole abalone
+    Shucked weight  continuous  grams   weight of meat
+    Viscera weight  continuous  grams   gut weight (after bleeding)
+    Shell weight    continuous  grams   after being dried
+    Rings           integer             +1.5 gives the age in years
+    \end{verbatim}
+
+    With the following statistic summary:
+
+    \begin{verbatim}
+            Length  Diam    Height  Whole   Shucked Viscera Shell   Rings
+    Min     0.075   0.055   0.000   0.002   0.001   0.001   0.002       1
+    Max     0.815   0.650   1.130   2.826   1.488   0.760   1.005      29
+    Mean    0.524   0.408   0.140   0.829   0.359   0.181   0.239   9.934
+    SD      0.120   0.099   0.042   0.490   0.222   0.110   0.139   3.224
+    Correl  0.557   0.575   0.557   0.540   0.421   0.504   0.628     1.0
+    \end{verbatim}
+
+    Response variable \emph{Rings} is the target of classification. 
+    In our work we do not use each age value $v \in \lbrace 1, \ldots, 29 \rbrace$ 
+    as classification bucket since having $29$ classes is quite dispersive.
+    Thus we aggregate the available \emph{Rings} values in six classes, called \emph{One},
+    \emph{Two}, \emph{Three}, \emph{Four}, \emph{Five} and \emph{Six} for simplicity, each of length five, 
+    starting from zero, inclusive on the left. Formally, $\forall v \in Rings$ holds: 
+    \begin{displaymath}
+        \begin{split}
+                v \in One &\leftrightarrow v \in \lbrace 0, \ldots, 4 \rbrace \\
+                v \in Two &\leftrightarrow v \in \lbrace 5, \ldots, 9 \rbrace \\
+                v \in Three &\leftrightarrow v \in \lbrace 10, \ldots, 14 \rbrace \\
+                v \in Four &\leftrightarrow v \in \lbrace 15, \ldots, 19 \rbrace \\
+                v \in Five &\leftrightarrow v \in \lbrace 20, \ldots, 24 \rbrace \\
+                v \in Six &\leftrightarrow v \in \lbrace 25, \ldots, 29 \rbrace \\
+        \end{split}
+    \end{displaymath}
 
     \begin{table}
-%      \begin{adjustwidth}{-1cm}{}
         \begin{tabular}{ c | c }
             Comprehensive distribution over $2924$ samples  &   Secret distribution over $1253$ samples \\
             \hline 
             \input{comprehensive-targets-histogram.tex} & \input{secret-targets-histogram.tex} \\
             \hline
         \end{tabular}
-%      \end{adjustwidth}
-      \caption{Summary table for \emph{computer scientist} user profile}
-      \label{fig:computer-scientist-user-profile}
+      \caption{On the left: histogram of samples used for training after aggregation.
+        On the right: histogram of samples kept secret after aggregation.}
+      \label{fig:comprehensive-histograms}
     \end{table}
 
-    \lipsum[1]
+    In \autoref{fig:comprehensive-histograms} we report the distribution of samples against
+    the six defined classes: we take apart the dataset in two partitions, the bigger one is
+    used for training, on the other hand the smaller one contains samples kept secret
+    in order to study how well a training function works when it sees a new sample not
+    trained for.
+
+    Dataset partitioning has been performed using the uniform distribution, and we 
+    repeat partitioning until distributions shown in \autoref{fig:comprehensive-histograms}
+    appeared, such that distribution of samples used for training is quite similar
+    to distribution of samples kept secret.
 
     \begin{table}
       \begin{adjustwidth}{-4cm}{}
@@ -140,13 +214,17 @@ MCHttpRepository
       
     \begin{thebibliography}{9}
 
-    \bibitem{SNORT}
-      SNORT Team,
-      \url{https://www.snort.org/}.
+    \bibitem{Nash-Sellers-Talbot-Cawthorn-Ford}
+    Warwick J Nash, Tracy L Sellers, Simon R Talbot, Andrew J Cawthorn and
+        Wes B Ford (1994) "The Population Biology of Abalone (Haliotis
+            species) in Tasmania. I. Blacklip Abalone (H. rubra) from the North
+                Coast and Islands of Bass Strait", Sea Fisheries Division, Technical
+                    Report No. 48 (ISSN 1034-3288)
 
-    \bibitem{SNORT-manual}
-      SNORT Team,
-      \url{http://manual.snort.org/}.
+
+    \bibitem{ml-berkeley-dataset-url}
+      Abalone dataset,
+      \url{http://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data}.
 
     \bibitem{vmstat}
       Free Software Foundation,
