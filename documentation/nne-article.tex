@@ -8,21 +8,20 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 
-
 \begin{document}
 \title{\rmfamily\normalfont\spacedallcaps{Homework for Neural Network Exam}} 
-    \author{\spacedlowsmallcaps{Massimo Nocentini}} \date{\today}
+    \author{Student: \spacedlowsmallcaps{Massimo Nocentini} \\
+    Professor: \spacedlowsmallcaps{Gregorio Landi}} \date{\today}
     
     \maketitle
 
-    %% \noindent\lipsum[1] Just a test.\footnote{This is a footnote.}      
     \begin{abstract}
-      This article collects the work I did in order to support my
+      This short document collects the work I did in order to support my
       Neural Network course final exam. The goal is to study neural networks
       using different training functions in order to test them against a dataset
-      which holds datas about abalone. This short document describes our experience:
-      we outline the problem and its application environment, the dataset used in
-      experiments and a comparison of classification's results by different training functions.
+      which holds data about abalone. Here I describe my experience, giving an
+      outline of the problem and its application environment, the structure of dataset used in
+      experiments and a comparison of classification's results obtained applying different training functions.
       \end{abstract}
        
      
@@ -48,12 +47,14 @@
     continuous values have been scaled for use with an ANN (by dividing by 200).
     \end{quote}
 
-    So, our goal is to classify abalone's age, in order to achieve this goal
+    So our goal is to classify abalone's age, in order to achieve that
     we tackle the dataset structure in the next section.
+
+    \newpage
 
     \section{Dataset structure}
 
-    The choosen dataset holds $4177$ samples and $8$ features variables and it 
+    The chosen dataset holds $4177$ samples and $8$ features variables and it 
     is structured according the following description:
 
     \begin{verbatim}
@@ -110,7 +111,7 @@
       \label{fig:comprehensive-histograms}
     \end{table}
 
-    In \autoref{fig:comprehensive-histograms} we report the distribution of samples against
+    In \autoref{fig:comprehensive-histograms} we report the distribution of samples over
     the six defined classes: we take apart the dataset in two partitions, the bigger one is
     used for training, on the other hand the smaller one contains samples kept secret
     in order to study how well a training function works when it sees a new sample not
@@ -138,7 +139,7 @@
     We do not report the source code since it is a bit tedious and doesn't show
     anything of interest respect our goal: Matlab script just use the supplied
     training functions (change just one line of code for each different classification)
-    while Smalltalk framework aggregate datas, builds histograms and produce their
+    while Smalltalk framework aggregate data, builds histograms and produces their
     \TeX representation (which we embed directly in this document). Both Matlab script,
     both Smalltalk framework are of public domain and described in \autoref{sec:appendix}.
 
@@ -158,23 +159,22 @@
     while on rows subsets of samples, ie the set of samples used for training (called \emph{All}), 
     the set of samples kept secret (called \emph{Secrets}) and, for each class $c$, a set of secret samples belonging to $c$.
     For each classification function $f$ and samples set $c$, the pair $(c, f)$ (ie, a cell) 
-    is the distribution of samples after a classification has been performed, training with $f$
+    is the distribution of samples after a classification has been performed, training with $f$ and
     relative to samples subset $c$. In other words, the distribution shown in each cell is
-    computed comparing classification results with the known targets. Three examples 
+    computed comparing classification results with known targets. Three examples 
     can be quite useful:
     \begin{itemize}
         \item pair $(All, RProp)$ report the distribution of samples produced by a classification
-        using $Resilient Propagation$ training function over the set of samples built for training.
+        using $Resilient Propagation$ training function over the set of samples reserved for training.
         We can compare this distribution with the leftmost one reported in \autoref{fig:comprehensive-histograms}
-        to have a comparison about the performance performed classification;
+        to have a comparison about classification's behavior;
 
         \item pair $(Secrets, SCG)$ report the distribution of samples produced by a classification
         using $Scaled Conjugate Gradient$ training function over the set of samples kept secret.
-        We can compare this distribution with the rightmost one reported in \autoref{fig:comprehensive-histograms}
-        to have a comparison about the performance performed classification;
+        In this case, we can compare this distribution with the rightmost one reported in \autoref{fig:comprehensive-histograms};
 
         \item pair $(Three, LM)$ report the distribution of samples produced by a classification
-        using $Levenberg-Marquardt$ training function over the the set of samples kept secret.
+        using $Levenberg-Marquardt$ training function over the set of samples kept secret.
         The distribution shows the ``variance'' of classified samples where we know that the
         sample belongs to class \emph{Three}, in particular: take any secret sample $s$ that we know from the 
         dataset that $s \in Three$, hence the pair $(Three, LM)$ says that $69.18 \%$ of them
@@ -183,6 +183,9 @@
 
     \end{itemize}
     
+    For each experiment the structure of the network remains fixed: a feed-forward nets, using one 
+    hidden layer with 10 neurons, with sigmoid activations and training up to $1000$ epochs.
+
     In the next sections we comment each experiment looking at the described table distributions
     and plotting training functions' performances.
 
@@ -195,7 +198,7 @@
 
     Respect individual classes, the classification is wrong for all of them but class \emph{Two}, 
     where taken a secret sample $s \in Two$ from the dataset, $s$ is correctly classified $91.06$ times out of $100$.
-    It seems that this training function remains centered on the first two classes since the
+    It seems that this training function remains centered on the first classes since the
     great majority of samples are classified to belong to classes \emph{Two} and \emph{Three}.
 
     In \autoref{fig:gdm-performance} we report a plot of performance against epochs: as we can
@@ -204,13 +207,13 @@
     \begin{figure}
     \centering
     \includegraphics[scale=0.7]{eps/gradient-descent-performance.eps}
-    \caption{Perfomance against epochs for \emph{Gradient Descent with Momentum} training function}
+    \caption{Performance against epochs for \emph{Gradient Descent with Momentum} training function}
     \label{fig:gdm-performance}
     \end{figure}
 
     \subsection{Resilient Propagation}
 
-    With this training function it is possible to have some enhancements respect the previous one, 
+    With this training function it is possible to have some enhancements respect the previous one: 
     as we can see from \autoref{fig:summary-table}, classification produces a samples' distribution
     where classes \emph{One} and \emph{Four} get increased, while the last two classes take no sample at all.
 
@@ -224,7 +227,7 @@
     \begin{figure}
     \centering
     \includegraphics[scale=0.7]{eps/rprop-performance.eps}
-    \caption{Perfomance against epochs for \emph{Resilient Propagation} training function}
+    \caption{Performance against epochs for \emph{Resilient Propagation} training function}
     \label{fig:rprop-performance}
     \end{figure}
 
@@ -235,13 +238,13 @@
     can be explained by the presence of some noise in the secret samples.
 
     In \autoref{fig:scg-performance} we report a plot of performance against epochs: as we can
-    see the error decreases in two main steps, remaining ``constant'' in those steps,
+    see the error decreases in two main steps, remaining ``constant'' in each one of them,
      taking $30$ epochs to complete the learning.
 
     \begin{figure}
     \centering
     \includegraphics[scale=0.7]{eps/scg-performance.eps}
-    \caption{Perfomance against epochs for \emph{Scaled Conjugate Gradient} training function}
+    \caption{Performance against epochs for \emph{Scaled Conjugate Gradient} training function}
     \label{fig:scg-performance}
     \end{figure}
 
@@ -262,7 +265,7 @@
     \begin{figure}
     \centering
     \includegraphics[scale=0.7]{eps/lm-performance.eps}
-    \caption{Perfomance against epochs for \emph{Levenberg-Marquardt} training function}
+    \caption{Performance against epochs for \emph{Levenberg-Marquardt} training function}
     \label{fig:lm-performance}
     \end{figure}
 
