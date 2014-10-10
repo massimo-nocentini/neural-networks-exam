@@ -181,20 +181,103 @@
         are correctly classified in \emph{Three}, while $25.79 \%$ are misclassified in \emph{Two} and 
         $5.03 \%$ are misclassified in \emph{Four}.
 
-
     \end{itemize}
     
+    In the next sections we comment each experiment looking at the described table distributions
+    and plotting training functions' performances.
 
     \subsection{Gradient Descent with Momentum}
+    
+    This is the first experiment we performed, just to have a ``base case'', in order to 
+    compare other powerful training functions. As we can see, both distributions of samples
+    reserved for training and those kept secret are quite different from the real ones, only
+    class \emph{Two} is matched in some way, although overestimated.
+
+    Respect individual classes, the classification is wrong for all of them but class \emph{Two}, 
+    where taken a secret sample $s \in Two$ from the dataset, $s$ is correctly classified $91.06$ times out of $100$.
+    It seems that this training function remains centered on the first two classes since the
+    great majority of samples are classified to belong to classes \emph{Two} and \emph{Three}.
+
+    In \autoref{fig:gdm-performance} we report a plot of performance against epochs: as we can
+    see the error slowly decreases, taking all the fixed $1000$ epochs to complete the learning.
+
+    \begin{figure}
+    \centering
+    \includegraphics[scale=0.7]{eps/gradient-descent-performance.eps}
+    \caption{Perfomance against epochs for \emph{Gradient Descent with Momentum} training function}
+    \label{fig:gdm-performance}
+    \end{figure}
 
     \subsection{Resilient Propagation}
 
+    With this training function it is possible to have some enhancements respect the previous one, 
+    as we can see from \autoref{fig:summary-table}, classification produces a samples' distribution
+    where classes \emph{One} and \emph{Four} get increased, while the last two classes take no sample at all.
+
+    Respect individual classes, taken a secret sample $s \in Two$ from the dataset, $s$ is correctly classified $82.83$ times out of $100$. 
+    On the other hand, taken a secret sample $s \in Three$ from the dataset, $s$ is correctly classified $64.57$ times out of $100$;
+    classification does a mistake for all other classes.
+
+    In \autoref{fig:rprop-performance} we report a plot of performance against epochs: as we can
+    see the error decreases faster than the previous training function's one, taking $147$ epochs to complete the learning.
+
+    \begin{figure}
+    \centering
+    \includegraphics[scale=0.7]{eps/rprop-performance.eps}
+    \caption{Perfomance against epochs for \emph{Resilient Propagation} training function}
+    \label{fig:rprop-performance}
+    \end{figure}
+
     \subsection{Scaled Conjugate Gradient}
+
+    This training function produced quite surprising results, since it classifies secret
+    samples in two classes only, \emph{Two} and \emph{Three} respectively. Maybe this strange behavior
+    can be explained by the presence of some noise in the secret samples.
+
+    In \autoref{fig:scg-performance} we report a plot of performance against epochs: as we can
+    see the error decreases in two main steps, remaining ``constant'' in those steps,
+     taking $30$ epochs to complete the learning.
+
+    \begin{figure}
+    \centering
+    \includegraphics[scale=0.7]{eps/scg-performance.eps}
+    \caption{Perfomance against epochs for \emph{Scaled Conjugate Gradient} training function}
+    \label{fig:scg-performance}
+    \end{figure}
 
     \subsection{Levenberg-Marquardt}
 
+    This training function is the one that produces a samples' distributions quite similar 
+    to the known ones, both for training samples both for samples kept secret. 
+
+    Respect individual classes, taken a secret sample $s \in One$ from the dataset, 
+    $s$ is correctly classified $54.29$ times out of $100$, while other trainings always behave worse. 
+    Taken a secret sample $s \in Two$ from the dataset, $s$ is correctly classified $80.14$ times out of $100$. 
+    On the other hand, taken a secret sample $s \in Three$ from the dataset, $s$ is correctly classified $69.18$ times out of $100$;
+    classification does a mistake for all other classes.
+
+    In \autoref{fig:lm-performance} we report a plot of performance against epochs: as we can
+    see the error decreases very fast, taking $27$ epochs to complete the learning.
+
+    \begin{figure}
+    \centering
+    \includegraphics[scale=0.7]{eps/lm-performance.eps}
+    \caption{Perfomance against epochs for \emph{Levenberg-Marquardt} training function}
+    \label{fig:lm-performance}
+    \end{figure}
+
     \section{Classification results}
-    \lipsum[1]
+    
+    In general, the classifications we've experimented with doesn't behave very
+    well, both respect the training samples both those kept secret: the 
+    best training function is \emph{Levenberg-Marquardt} for our purpose.
+
+    We could suggest that some improvements can be achieved if training consumes standardized
+    data: we've tackled this approach writing a Matlab script 
+    and then using the results as inputs for new experiments, obtaining better classification
+    of secret samples. We do not report those results here since it's only a sketch work, 
+    pointing the interested reader to  repository described in \autoref{sec:appendix}.
+
 
     \newpage
 
